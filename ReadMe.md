@@ -25,3 +25,10 @@
 - Use of regex in the routes /a/, /\*fly$/
 - Reading the query parmas ?name=akash&age=22 in the route
 - Reading the route parameters /:name/:age --> Dynamic Routes
+
+## Middlewares and Error Handlers
+
+- Multiple routes with the handler play with code
+- next()
+- next functions and errors along with res.send()
+- app.use("/route", rH, [rh1,rh2] ,rh3, rh4);

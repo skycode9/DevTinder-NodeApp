@@ -32,3 +32,6 @@
 - next()
 - next functions and errors along with res.send()
 - app.use("/route", rH, [rh1,rh2] ,rh3, rh4);
+- What is Middleware? and why we use it?
+- Diffrence between app.use and app.all
+- Write a dummy auth middleware and test it for admin and user routes

@@ -35,3 +35,4 @@
 - What is Middleware? and why we use it?
 - Diffrence between app.use and app.all
 - Write a dummy auth middleware and test it for admin and user routes
+- Error Handling with app.use(err, req, res, next) and try catch method

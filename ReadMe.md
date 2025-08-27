@@ -9,3 +9,13 @@
 - Listen to port 3030
 - Write a request handler for "/", "/test", "/hello"
 - Install nodemon and update the scripts inside the package.json
+- What are the dependencies in package.json?
+- What is the "-g" flag in npm i nodemon?
+- What is diffrence between ~ and ^ in package.json?
+- What is the difference between devDependencies and dependencies?
+- What is the difference between package.json and package-lock.json?
+
+## Routes and Request Handlers
+
+- Play with the routes and route extensions ex. '/hello', '/', '/hello/2'
+- Order of the routes matter most.

@@ -6,8 +6,8 @@ app.use(
   "/middleware",
   (req, res, next) => {
     console.log("Route Handler");
-    //res.send("Route Handler 1");
     next();
+    res.send("Route Handler 1");
   },
   (req, res) => {
     console.log("Route Handler 2");

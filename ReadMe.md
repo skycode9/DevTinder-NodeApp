@@ -21,3 +21,7 @@
 - Order of the routes matter most.
 - Install a Postman and make a workspace/collection > Test API calls
 - Write the logic of GET, POST, PUT, DELETE, PATCH API calls and test them in Postman
+- Exploren rounting and use of ?, +, \*, (), | in the routes
+- Use of regex in the routes /a/, /\*fly$/
+- Reading the query parmas ?name=akash&age=22 in the route
+- Reading the route parameters /:name/:age --> Dynamic Routes

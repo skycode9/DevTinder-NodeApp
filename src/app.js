@@ -8,17 +8,19 @@ const app = express();
 
 //This will only handle GET calls to /user
 app.get("/user", (req, res) => {
-  res.send("User profile fetched");
+  res.send({ firstName: "Akash", lastName: "Amin", age: 22 });
 });
 
-app.post("/user", (req, res) => {
-  // logic to save data to database
-  res.send("User data successfully saved in Database");
+// Request Params ex: /user?firstName:"Akash"&lastName:"Amin"
+app.get("/user1/", (req, res) => {
+  console.log(req.query);
+  res.send("req query example");
 });
 
-app.delete("/user", (req, res) => {
-  // logic to data delete.
-  res.send("User data deleted successfully");
+// Routes Params ex: /user/:userId/:password
+app.get("/user2/:userId/:password", (req, res) => {
+  console.log(req.params);
+  res.send("req params example");
 });
 
 // This will match all HTTP methods GET, POST, PUT, DELETE, PATCH API Calls to /test

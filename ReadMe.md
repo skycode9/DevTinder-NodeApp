@@ -36,3 +36,10 @@
 - Diffrence between app.use and app.all
 - Write a dummy auth middleware and test it for admin and user routes
 - Error Handling with app.use(err, req, res, next) and try catch method
+
+## Database & Schema, Models and Mongoose
+
+- Create a free culster on a MongoDB website
+- Install a mongoose liabrary (npm i mongoose)
+- Connect your application to the Database --> <ConnectionURL>/DBname
+- Call the ConnectDB fn and connect the Databse and after run the application on port like 3030

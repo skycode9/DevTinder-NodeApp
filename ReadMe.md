@@ -55,3 +55,7 @@
 - User.findOne() with duplicate email ids, which one is returned
 - API - get user by emailId
 - API - feed API - get all the users from the database
+- Diffrent between patch() and put()
+- API - update the user
+- API - update the user by emailId
+- API - Delete the user

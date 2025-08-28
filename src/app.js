@@ -58,6 +58,77 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+// update the user by id
+app.patch("/user", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const body = req.body;
+    const updatedUser = await User.findByIdAndUpdate(userId, body, {
+      returnDocument: "before",
+    });
+    //console.log(updatedUser);
+
+    if (!updatedUser) {
+      res.status(400).json({
+        msg: "Not updated",
+      });
+    }
+    res.status(200).json({
+      msg: "User updated suceesfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Something went wrong",
+    });
+  }
+});
+
+// update the user by email
+app.patch("/useremailid", async (req, res) => {
+  try {
+    const userEmail = req.body.emailId;
+    const data = req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { emailId: userEmail },
+      data,
+      { returnDocument: "after" }
+    );
+    if (!updatedUser) {
+      res.status(400).json({
+        msg: "Not updated",
+      });
+    }
+    res.status(200).json({
+      msg: "updated",
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Something went wrong",
+    });
+  }
+});
+
+// Delete the user by id
+app.delete("/user", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      return res.status(400).json({
+        msg: "user not found",
+      });
+    }
+    res.status(200).json({
+      msg: "User deleted successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Something went wrong",
+    });
+  }
+});
+
 // This is correct way to start the application first connect to the database and start the server.
 connectDB()
   .then(() => {

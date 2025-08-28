@@ -44,3 +44,5 @@
 - Connect your application to the Database --> <ConnectionURL>/DBname
 - Call the ConnectDB fn and connect the Databse and after run the application on port like 3030
 - Create a UserSchema and UserModel
+- Create POST/SignUp API to add data to the Database
+- Push some documents using API calls from postman

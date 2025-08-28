@@ -21,6 +21,43 @@ app.post("/signup", async (req, res) => {
     });
   }
 });
+
+// Get User from emailId
+app.get("/user", async (req, res) => {
+  try {
+    const userEmail = req.body.emailId;
+    const userData = await User.findOne({ emailId: userEmail });
+    if (!userData) {
+      res.status(404).json({
+        msg: "User Not found",
+      });
+    }
+    res.status(200).json({
+      user: userData,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      msg: "something went wrong",
+    });
+  }
+});
+
+// Get Feed Data from database All the data
+app.get("/feed", async (req, res) => {
+  try {
+    const UsersData = await User.find({});
+    res.status(200).json({
+      users: UsersData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong",
+    });
+  }
+});
+
 // This is correct way to start the application first connect to the database and start the server.
 connectDB()
   .then(() => {

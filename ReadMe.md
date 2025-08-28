@@ -43,3 +43,4 @@
 - Install a mongoose liabrary (npm i mongoose)
 - Connect your application to the Database --> <ConnectionURL>/DBname
 - Call the ConnectDB fn and connect the Databse and after run the application on port like 3030
+- Create a UserSchema and UserModel

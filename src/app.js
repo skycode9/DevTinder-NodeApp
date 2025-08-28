@@ -3,15 +3,13 @@ const connectDB = require("./config/database");
 const User = require("./models/User");
 
 const app = express();
+//middleware to use for convert your upcoming json data to js object
+app.use(express.json());
 
 app.post("/signup", async (req, res) => {
+  //console.log(req.body); //--> this give you undefined because of json for that we have to use express.json() middleware
   try {
-    const UserData = new User({
-      firstName: "Keyur",
-      lastName: "Amin",
-      emailId: "ak@ak.com",
-      password: "Keyur@123",
-    });
+    const UserData = new User(req.body);
     await UserData.save();
     res.status(200).json({
       msg: "UserData Added Succesfully",

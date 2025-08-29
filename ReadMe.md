@@ -70,3 +70,6 @@
 - Add the timestamps in the UserSchema
 - Add API level validation on Patch request & Signup post api
 - DATA Sanitizing - Add API validation for each field
+- Install validator
+- Explore validator library funcation and Use vlidator funcs for password, email, photoURL
+- Never Trust your req.body

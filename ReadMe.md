@@ -59,3 +59,12 @@
 - API - update the user
 - API - update the user by emailId
 - API - Delete the user
+
+## Data Sanitization and Schema Validation
+
+- Explore Schematype options from the doc
+- add require, minLenth, min, trim, unique, lowercase
+- Add Default
+- Create a custom validation function for gender
+- Improve the DB Schema - put all the approppriate validation to each field in the Schema
+- Add the timestamps in the UserSchema

@@ -15,9 +15,9 @@ app.post("/signup", async (req, res) => {
       msg: "UserData Added Succesfully",
     });
   } catch (error) {
-    console.log("error", error);
-    res.status(500).json({
+    res.status(400).json({
       msg: "Something went wrong",
+      err: error.message,
     });
   }
 });
@@ -38,8 +38,9 @@ app.get("/user", async (req, res) => {
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({
+    res.status(400).json({
       msg: "something went wrong",
+      err: error.message,
     });
   }
 });
@@ -52,8 +53,9 @@ app.get("/feed", async (req, res) => {
       users: UsersData,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       msg: "something went wrong",
+      err: error.message,
     });
   }
 });
@@ -63,22 +65,46 @@ app.patch("/user", async (req, res) => {
   try {
     const userId = req.body.userId;
     const body = req.body;
+
+    // If updating emailId, check for duplicates first
+    if (body.emailId) {
+      const existingUser = await User.findOne({ 
+        emailId: body.emailId,
+        _id: { $ne: userId } // Exclude current user
+      });
+      if (existingUser) {
+        return res.status(400).json({
+          msg: "Email already exists",
+          err: "Duplicate email address"
+        });
+      }
+    }
+
     const updatedUser = await User.findByIdAndUpdate(userId, body, {
-      returnDocument: "before",
+      returnDocument: "after",
+      runValidators: true,
     });
-    //console.log(updatedUser);
 
     if (!updatedUser) {
-      res.status(400).json({
-        msg: "Not updated",
+      return res.status(400).json({
+        msg: "User not found",
       });
     }
     res.status(200).json({
-      msg: "User updated suceesfully",
+      msg: "User updated successfully",
+      user: updatedUser
     });
   } catch (error) {
+    // Handle MongoDB duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        msg: "Email already exists",
+        err: "Duplicate email address"
+      });
+    }
     res.status(400).json({
       msg: "Something went wrong",
+      err: error.message,
     });
   }
 });
@@ -89,22 +115,42 @@ app.patch("/useremailid", async (req, res) => {
     const userEmail = req.body.emailId;
     const data = req.body;
 
+    // If updating emailId, check for duplicates first
+    if (data.emailId && data.emailId !== userEmail) {
+      const existingUser = await User.findOne({ emailId: data.emailId });
+      if (existingUser) {
+        return res.status(400).json({
+          msg: "Email already exists",
+          err: "Duplicate email address"
+        });
+      }
+    }
+
     const updatedUser = await User.findOneAndUpdate(
       { emailId: userEmail },
       data,
-      { returnDocument: "after" }
+      { returnDocument: "after", runValidators: true }
     );
     if (!updatedUser) {
-      res.status(400).json({
-        msg: "Not updated",
+      return res.status(400).json({
+        msg: "User not found",
       });
     }
     res.status(200).json({
-      msg: "updated",
+      msg: "User updated successfully",
+      user: updatedUser
     });
   } catch (error) {
+    // Handle MongoDB duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        msg: "Email already exists",
+        err: "Duplicate email address"
+      });
+    }
     res.status(400).json({
       msg: "Something went wrong",
+      err: error.message,
     });
   }
 });
@@ -125,6 +171,7 @@ app.delete("/user", async (req, res) => {
   } catch (error) {
     res.status(400).json({
       msg: "Something went wrong",
+      err: error.message,
     });
   }
 });

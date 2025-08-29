@@ -5,6 +5,7 @@ const { validateSignUpData } = require("../utils/validation");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const { userAuth } = require("./middlewares/auth");
 
 const app = express();
 
@@ -62,11 +63,14 @@ app.post("/login", async (req, res) => {
     // Create a JWT Token
     const token = await jwt.sign(
       { _id: isUserExits._id },
-      "DevTinder@92839!@#$"
+      "DevTinder@92839!@#$",
+      { expiresIn: "1d" }
     );
 
     // Add the token to cookie and send the response back to the user
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
 
     res.status(200).json({
       msg: "Login Successfully",
@@ -79,30 +83,26 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const cookie = req.cookies; // ---> for this we need to parser the cookie
-    console.log(cookie);
-    const { token } = cookie;
-    if (!token) {
-      throw new Error("Token is Not found..!");
-    }
-
-    const decodedData = await jwt.verify(token, "DevTinder@92839!@#$");
-    console.log(decodedData);
-
-    const { _id } = decodedData;
-    console.log(_id);
-
-    const user = await User.findById(_id);
-
-    if (!user) {
-      throw new Error("User does not exits..!");
-    }
-
+    const user = req.user;
     res.status(200).json({
       user: user,
     });
+  } catch (error) {
+    res.status(400).json({
+      msg: "something went wrong",
+      err: error.message,
+    });
+  }
+});
+
+app.get("/sendConnectionRequest", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    res
+      .status(200)
+      .json({ msg: user.firstName + " sent the connect request!" });
   } catch (error) {
     res.status(400).json({
       msg: "something went wrong",

@@ -61,26 +61,33 @@ app.get("/feed", async (req, res) => {
 });
 
 // update the user by id
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
   try {
-    const userId = req.body.userId;
-    const body = req.body;
+    const userId = req.params?.userId;
+    const data = req.body;
 
-    // If updating emailId, check for duplicates first
-    if (body.emailId) {
-      const existingUser = await User.findOne({ 
-        emailId: body.emailId,
-        _id: { $ne: userId } // Exclude current user
-      });
-      if (existingUser) {
-        return res.status(400).json({
-          msg: "Email already exists",
-          err: "Duplicate email address"
-        });
-      }
+    console.log(data);
+
+    const ALLOWED_UPDATES = [
+      "photoUrl",
+      "about",
+      "gender",
+      "age",
+      "skills",
+      "lastName",
+    ];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+    if (data.skills && data.skills.length > 10) {
+      throw new Error("Skills cannot be more than 10");
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, body, {
+    const updatedUser = await User.findByIdAndUpdate(userId, data, {
       returnDocument: "after",
       runValidators: true,
     });
@@ -92,16 +99,9 @@ app.patch("/user", async (req, res) => {
     }
     res.status(200).json({
       msg: "User updated successfully",
-      user: updatedUser
+      user: updatedUser,
     });
   } catch (error) {
-    // Handle MongoDB duplicate key error
-    if (error.code === 11000) {
-      return res.status(400).json({
-        msg: "Email already exists",
-        err: "Duplicate email address"
-      });
-    }
     res.status(400).json({
       msg: "Something went wrong",
       err: error.message,
@@ -109,51 +109,40 @@ app.patch("/user", async (req, res) => {
   }
 });
 
-// update the user by email
-app.patch("/useremailid", async (req, res) => {
-  try {
-    const userEmail = req.body.emailId;
-    const data = req.body;
+// // update the user by email
+// app.patch("/useremailid", async (req, res) => {
+//   try {
+//     const userEmail = req.body.emailId;
+//     const data = req.body;
 
-    // If updating emailId, check for duplicates first
-    if (data.emailId && data.emailId !== userEmail) {
-      const existingUser = await User.findOne({ emailId: data.emailId });
-      if (existingUser) {
-        return res.status(400).json({
-          msg: "Email already exists",
-          err: "Duplicate email address"
-        });
-      }
-    }
-
-    const updatedUser = await User.findOneAndUpdate(
-      { emailId: userEmail },
-      data,
-      { returnDocument: "after", runValidators: true }
-    );
-    if (!updatedUser) {
-      return res.status(400).json({
-        msg: "User not found",
-      });
-    }
-    res.status(200).json({
-      msg: "User updated successfully",
-      user: updatedUser
-    });
-  } catch (error) {
-    // Handle MongoDB duplicate key error
-    if (error.code === 11000) {
-      return res.status(400).json({
-        msg: "Email already exists",
-        err: "Duplicate email address"
-      });
-    }
-    res.status(400).json({
-      msg: "Something went wrong",
-      err: error.message,
-    });
-  }
-});
+//     const updatedUser = await User.findOneAndUpdate(
+//       { emailId: userEmail },
+//       data,
+//       { returnDocument: "after", runValidators: true }
+//     );
+//     if (!updatedUser) {
+//       return res.status(400).json({
+//         msg: "User not found",
+//       });
+//     }
+//     res.status(200).json({
+//       msg: "User updated successfully",
+//       user: updatedUser,
+//     });
+//   } catch (error) {
+//     // Handle MongoDB duplicate key error
+//     if (error.code === 11000) {
+//       return res.status(400).json({
+//         msg: "Email already exists",
+//         err: "Duplicate email address",
+//       });
+//     }
+//     res.status(400).json({
+//       msg: "Something went wrong",
+//       err: error.message,
+//     });
+//   }
+// });
 
 // Delete the user by id
 app.delete("/user", async (req, res) => {

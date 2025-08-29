@@ -36,6 +36,36 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  try {
+    // extreact the req.body
+    const { emailId, password } = req.body;
+
+    // find the user is exitis or not
+    const isUserExitis = await User.findOne({ emailId: emailId });
+    if (!isUserExitis) {
+      throw new Error("Authentication Failed..!");
+    }
+
+    // check the user is correct or not
+    const isUserAuthorized = await bcrypt.compare(
+      password,
+      isUserExitis.password
+    );
+    if (!isUserAuthorized) {
+      throw new Error("Auhthentication Failed..!");
+    }
+    res.status(200).json({
+      msg: "Login Successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Something went wrong",
+      err: error.message,
+    });
+  }
+});
+
 // Get User from emailId
 app.get("/user", async (req, res) => {
   try {

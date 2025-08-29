@@ -1,6 +1,8 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/User");
+const { validateSignUpData } = require("../utils/validation");
+const bcrypt = require("bcrypt");
 
 const app = express();
 //middleware to use for convert your upcoming json data to js object
@@ -9,7 +11,19 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
   //console.log(req.body); //--> this give you undefined because of json for that we have to use express.json() middleware
   try {
-    const UserData = new User(req.body);
+    // Extract the req.body
+    const { firstName, lastName, emailId, password } = req.body;
+    // Validating the req.body data
+    validateSignUpData(req);
+    // Encrypting the passwords
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Save in Database ---> right way to save data
+    const UserData = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: hashedPassword,
+    });
     await UserData.save();
     res.status(200).json({
       msg: "UserData Added Succesfully",

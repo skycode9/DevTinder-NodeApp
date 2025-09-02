@@ -51,21 +51,14 @@ app.post("/login", async (req, res) => {
       throw new Error("Authentication Failed..!");
     }
 
-    // check the user is correct or not
-    const isUserAuthorized = await bcrypt.compare(
-      password,
-      isUserExits.password
-    );
+    // check the password is correct or not
+    const isUserAuthorized = await isUserExits.validatePassword(password);
     if (!isUserAuthorized) {
       throw new Error("Auhthentication Failed..!");
     }
 
     // Create a JWT Token
-    const token = await jwt.sign(
-      { _id: isUserExits._id },
-      "DevTinder@92839!@#$",
-      { expiresIn: "1d" }
-    );
+    const token = await isUserExits.getJWT();
 
     // Add the token to cookie and send the response back to the user
     res.cookie("token", token, {

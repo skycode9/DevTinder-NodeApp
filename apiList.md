@@ -16,6 +16,8 @@
 
 - POST /request/send/intereted/:userId
 - POST /request/send/ignored/:userId
+- POST /request/send/:status/:toUserId
+
 - POST /request/review/accepted/:requestId
 - POST /request/review/rejected/:requestId
 
@@ -25,4 +27,4 @@
 - GET /user/requests
 - GET /user/feed - Gets you the profiles of other users on platform
 
-Status: ignore, interested, accepeted, rejected
+Status: ignored, interested, accepeted, rejected

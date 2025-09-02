@@ -9,7 +9,6 @@ const userAuth = async (req, res, next) => {
     }
 
     const decodedData = await jwt.verify(token, "DevTinder@92839!@#$");
-    console.log(decodedData);
 
     const { _id } = decodedData;
 

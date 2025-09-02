@@ -46,7 +46,7 @@ requestRoutes.post(
       const data = await connectionRequest.save();
 
       res.status(200).json({
-        msg: `${req.user.firstName} is successfully send the request to ${isValidToUserId.firstName}`,
+        msg: `${req.user.firstName} successfully sent the request to ${isValidToUserId.firstName}`,
       });
     } catch (error) {
       res.status(400).json({

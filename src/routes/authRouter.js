@@ -4,6 +4,7 @@ const authRoutes = express.Router();
 const User = require("../models/User");
 const { validateSignUpData } = require("../../utils/validation");
 const bcrypt = require("bcrypt");
+const { userAuth } = require("../middlewares/auth");
 
 authRoutes.post("/signup", async (req, res) => {
   //console.log(req.body); //--> this give you undefined because of json for that we have to use express.json() middleware
@@ -67,6 +68,11 @@ authRoutes.post("/login", async (req, res) => {
       err: error.message,
     });
   }
+});
+
+authRoutes.post("/logout", userAuth, async (req, res) => {
+  res.cookie("token", null, { expires: new Date(Date.now()) });
+  res.status(200).json({ msg: "Logout Successfully..!" });
 });
 
 module.exports = authRoutes;

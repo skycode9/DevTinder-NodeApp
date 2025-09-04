@@ -76,15 +76,12 @@ UserSchema.methods.getJWT = async function () {
   const token = await jwt.sign({ _id: user._id }, "DevTinder@92839!@#$", {
     expiresIn: "7d",
   });
-  console.log(token);
 
   return token;
 };
 
 UserSchema.methods.validatePassword = async function (passwordInputByUser) {
   const user = this;
-  console.log(user);
-  console.log(passwordInputByUser);
 
   const isAuthenticated = await bcrypt.compare(
     passwordInputByUser,

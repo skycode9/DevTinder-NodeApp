@@ -1,6 +1,7 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/ConnectionRequest");
+const User = require("../models/User");
 const userRoutes = express.Router();
 
 const USER_DATA = "firstName lastName photoUrl";
@@ -71,4 +72,45 @@ userRoutes.get("/user/view/connections", userAuth, async (req, res) => {
     res.status(400).json({ msg: "something went wrong", error: error.message });
   }
 });
+
+// get all the feed data where user doesn't send any request and see in home page except himself too
+userRoutes.get("/user/feed", userAuth, async (req, res) => {
+  try {
+    // User can see all the user cards(profiles) except
+    // 0. His own card
+    // 1. his connection --> accepted their reuest
+    // 2. ignored card --> ignores the req
+    // 3. Alredy sent the connection --> interested
+    // 4. rejected card
+
+    const loggedInUser = req.user;
+
+    // find all the connection request (Send + Received)
+    const connectionRequest = await ConnectionRequest.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId toUserId");
+
+    const hideUserFromFeed = new Set();
+    //['A','B','C'] ---> never put a 'A in this array' ---> this set data structure giving us unique array
+
+    connectionRequest.forEach((req) => {
+      hideUserFromFeed.add(req.fromUserId.toString());
+      hideUserFromFeed.add(req.toUserId.toString());
+    });
+
+    // console.log("set", hideUserFromFeed);
+
+    const userFeed = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(hideUserFromFeed) } },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    });
+
+    res.send(userFeed);
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
+});
+
 module.exports = userRoutes;

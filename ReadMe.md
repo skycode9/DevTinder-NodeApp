@@ -130,3 +130,8 @@
 - Thought process - POST vs GET
 - Read about ref and populate https://mongoosejs.com/docs/populate.html
 - Create GET /user/requests/received with all the checks
+
+## Feed Api and Pagination
+
+- Logic for GET /feed API
+- Explore the $nin , $and, $ne and other query operatorators

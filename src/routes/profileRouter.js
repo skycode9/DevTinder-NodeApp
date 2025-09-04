@@ -7,7 +7,7 @@ const {
   validateEditProfileData,
   validateOldPassword,
   validateNewPasswordData,
-} = require("../../utils/validation");
+} = require("../utils/validation");
 
 profileRoutes.get("/profile/view", userAuth, async (req, res) => {
   try {

@@ -123,3 +123,7 @@
 - What is the advantages and disadvantage of creating?
 - Read this arcticle about compond indexes - https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/
 - ALWAYS THINK ABOUT CORNER CASES
+
+## ref, Populate & Thought process of writing APIs
+
+- Write a code with proper validation for thi API - POST /request/review/:status/:requestId

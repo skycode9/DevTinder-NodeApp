@@ -61,6 +61,7 @@ authRoutes.post("/login", async (req, res) => {
 
     res.status(200).json({
       msg: "Login Successfully",
+      data: isUserExits,
     });
   } catch (error) {
     res.status(400).json({

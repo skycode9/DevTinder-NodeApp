@@ -115,6 +115,10 @@ userRoutes.get("/user/feed", userAuth, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
+    if (userFeed.length == 0) {
+      return res.status(404).json({ msg: "Data is not found" });
+    }
+
     res.status(200).json({ msg: "Data Fetched..!", data: userFeed });
   } catch (error) {
     res.status(400).json({ msg: error.message });

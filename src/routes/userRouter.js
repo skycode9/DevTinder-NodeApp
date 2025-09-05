@@ -84,6 +84,12 @@ userRoutes.get("/user/feed", userAuth, async (req, res) => {
     // 4. rejected card
 
     const loggedInUser = req.user;
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+
+    limit = limit > 50 ? 50 : limit;
+
+    const skip = (page - 1) * limit;
 
     // find all the connection request (Send + Received)
     const connectionRequest = await ConnectionRequest.find({
@@ -91,7 +97,7 @@ userRoutes.get("/user/feed", userAuth, async (req, res) => {
     }).select("fromUserId toUserId");
 
     const hideUserFromFeed = new Set();
-    //['A','B','C'] ---> never put a 'A in this array' ---> this set data structure giving us unique array
+    //['A','B','C'] ---> never put a 'A in this array it will replace with Old "A"' ---> this set data structure giving us unique array
 
     connectionRequest.forEach((req) => {
       hideUserFromFeed.add(req.fromUserId.toString());
@@ -105,9 +111,11 @@ userRoutes.get("/user/feed", userAuth, async (req, res) => {
         { _id: { $nin: Array.from(hideUserFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    });
+    })
+      .skip(skip)
+      .limit(limit);
 
-    res.send(userFeed);
+    res.status(200).json({ msg: "Data Fetched..!", data: userFeed });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }

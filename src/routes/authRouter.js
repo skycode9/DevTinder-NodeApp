@@ -22,9 +22,17 @@ authRoutes.post("/signup", async (req, res) => {
       emailId,
       password: hashedPassword,
     });
-    await UserData.save();
+    const newUser = await UserData.save();
+
+    // create a JWT Token
+    const token = await newUser.getJWT();
+
+    // Add token to the cookie
+    res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
+
     res.status(200).json({
       msg: "UserData Added Succesfully",
+      data: newUser,
     });
   } catch (error) {
     res.status(400).json({
@@ -42,13 +50,17 @@ authRoutes.post("/login", async (req, res) => {
     // find the user is exits or not
     const isUserExits = await User.findOne({ emailId: emailId });
     if (!isUserExits) {
-      throw new Error("Authentication Failed..!");
+      return res.status(401).json({
+        msg: "Authentication Failed..!",
+      });
     }
 
     // check the password is correct or not
     const isUserAuthorized = await isUserExits.validatePassword(password);
     if (!isUserAuthorized) {
-      throw new Error("Auhthentication Failed..!");
+      return res.status(401).json({
+        msg: "Authentication Failed..!",
+      });
     }
 
     // Create a JWT Token

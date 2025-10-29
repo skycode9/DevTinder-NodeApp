@@ -30,11 +30,9 @@ profileRoutes.patch("/profile/edit", userAuth, async (req, res) => {
       throw new Error("Edit fileds are not allowed");
     }
     const loggedInUser = req.user;
-    const updatedData = Object.keys(req.body).forEach(
-      (key) => (loggedInUser[key] = req.body[key])
-    );
+    Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
     await loggedInUser.save();
-    res.json({
+    res.status(200).json({
       message: `${loggedInUser.firstName}, your profile updated successfuly`,
       data: loggedInUser,
     });

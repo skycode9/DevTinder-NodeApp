@@ -4,7 +4,7 @@ const ConnectionRequest = require("../models/ConnectionRequest");
 const User = require("../models/User");
 const userRoutes = express.Router();
 
-const USER_DATA = "firstName lastName photoUrl";
+const USER_DATA = "firstName lastName photoUrl age gender about";
 
 // Get all the pending connection request for the loggedIn user
 userRoutes.get("/user/requests/received", userAuth, async (req, res) => {
@@ -13,7 +13,7 @@ userRoutes.get("/user/requests/received", userAuth, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    }).populate("fromUserId", ["firstName", "lastName"]);
+    }).populate("fromUserId", USER_DATA);
     if (connectionRequest.length == 0) {
       return res.status(404).json({ msg: "Data not found..!" });
     }

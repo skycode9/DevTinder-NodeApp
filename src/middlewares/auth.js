@@ -5,7 +5,7 @@ const userAuth = async (req, res, next) => {
     const cookie = req.cookies; // ---> for this we need to parser the cookie
     const { token } = cookie;
     if (!token) {
-      throw new Error("Token is Not found..!");
+      return res.status(401).json({ msg: "You're not Authorized..!" });
     }
 
     const decodedData = await jwt.verify(token, "DevTinder@92839!@#$");
@@ -15,7 +15,7 @@ const userAuth = async (req, res, next) => {
     const user = await User.findById(_id);
 
     if (!user) {
-      throw new Error("User does not exits..!");
+      return res.status(401).json({ msg: "Invalid Credentials..!" });
     }
 
     req.user = user;

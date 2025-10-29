@@ -13,15 +13,28 @@ const cors = require("cors");
 //middleware to use for convert your upcoming json data to js object
 app.use(express.json());
 app.use(cookieParser());
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+// CORS Configuration for both development and production
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL, // Production frontend URL
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  })
+);
 
 const authRouter = require("./routes/authRouter");
 const profileRouter = require("./routes/profileRouter");
@@ -174,13 +187,15 @@ app.delete("/user", async (req, res) => {
 });
 
 // This is correct way to start the application first connect to the database and start the server.
+const PORT = process.env.PORT || 3030;
+
 connectDB()
   .then(() => {
     console.log("Database connection is established..");
-    app.listen("3030", () => {
-      console.log("server running on 3030");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Databse not connected..!");
+    console.error("Database not connected..!");
   });

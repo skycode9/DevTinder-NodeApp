@@ -8,7 +8,7 @@ const userAuth = async (req, res, next) => {
       return res.status(401).json({ msg: "You're not Authorized..!" });
     }
 
-    const decodedData = await jwt.verify(token, "DevTinder@92839!@#$");
+    const decodedData = await jwt.verify(token, process.env.JWT_SECRET);
 
     const { _id } = decodedData;
 

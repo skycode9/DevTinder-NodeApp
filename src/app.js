@@ -1,11 +1,14 @@
+// Load environment variables first
+require("dotenv").config();
+
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/User");
 const cookieParser = require("cookie-parser");
 const { userAuth } = require("./middlewares/auth");
+const cors = require("cors");
 
 const app = express();
-const cors = require("cors");
 
 //middleware to use for convert your upcoming json data to js object
 app.use(express.json());

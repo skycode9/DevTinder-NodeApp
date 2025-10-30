@@ -27,8 +27,13 @@ authRoutes.post("/signup", async (req, res) => {
     // create a JWT Token
     const token = await newUser.getJWT();
 
-    // Add token to the cookie
-    res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
+    // Add token to the cookie with proper security settings
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
 
     res.status(200).json({
       msg: "UserData Added Succesfully",
@@ -69,6 +74,9 @@ authRoutes.post("/login", async (req, res) => {
     // Add the token to cookie and send the response back to the user
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
     res.status(200).json({
@@ -84,7 +92,12 @@ authRoutes.post("/login", async (req, res) => {
 });
 
 authRoutes.post("/logout", userAuth, async (req, res) => {
-  res.cookie("token", null, { expires: new Date(Date.now()) });
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
   res.status(200).json({ msg: "Logout Successfully..!" });
 });
 

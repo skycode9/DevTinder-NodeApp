@@ -28,13 +28,21 @@ authRoutes.post("/signup", async (req, res) => {
     const token = await newUser.getJWT();
 
     // Add token to the cookie with proper security settings
-    const isProduction = process.env.NODE_ENV === "production";
+    // const isProduction = process.env.NODE_ENV === "production";
+    // res.cookie("token", token, {
+    //   expires: new Date(Date.now() + 2 * 24 * 3600000),
+    //   httpOnly: true,
+    //   secure: isProduction,
+    //   sameSite: isProduction ? "none" : "lax",
+    //   domain: isProduction ? undefined : "localhost",
+    // });
+
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 8 * 3600000),
+      expires: new Date(Date.now() + 2 * 24 * 3600000),
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      domain: isProduction ? undefined : "localhost",
+      secure: true,
+      sameSite: "None",
+      // domain: isProduction ? undefined : "localhost",
     });
 
     res.status(200).json({
@@ -76,11 +84,11 @@ authRoutes.post("/login", async (req, res) => {
     // Add the token to cookie and send the response back to the user
     const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 8 * 3600000),
+      expires: new Date(Date.now() + 2 * 24 * 3600000),
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      domain: isProduction ? undefined : "localhost",
+      secure: true,
+      sameSite: "None",
+      // domain: isProduction ? undefined : "localhost",
     });
 
     res.status(200).json({

@@ -3,6 +3,8 @@ const User = require("../models/User");
 
 const userAuth = async (req, res, next) => {
   try {
+    console.log("🍪 All cookies:", req.cookies); // ✅ Yeh add karo
+    console.log("📦 Headers:", req.headers.cookie);
     const cookie = req.cookies; // ---> for this we need to parser the cookie
     const { token } = cookie;
     if (!token) {

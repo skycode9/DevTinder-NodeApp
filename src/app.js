@@ -13,6 +13,18 @@ app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.set("Access-Control-Allow-Credentials", "true");
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.set(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
+  );
+  res.set("Access-Control-Expose-Headers", "Set-Cookie");
+  res.set("Access-Control-Max-Age", "86400"); // 24 hours
   next();
 });
 
@@ -32,7 +44,7 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps, Postman, or curl)
       if (!origin) return callback(null, true);
-      
+
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
